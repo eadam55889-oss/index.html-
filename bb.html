@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>رسالة من القلب</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #ffe4e1; /* لون وردي كريمي مريح (Misty Rose) */
+            font-family: 'Cairo', sans-serif;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            z-index: 10;
+        }
+
+        /* تأثير الظهور الناعم للنص */
+        #text-content {
+            font-size: 1.4rem;
+            color: #880e4f;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 2s ease, transform 2s ease; /* ظهور تدريجي خلال ثانيتين */
+        }
+
+        #btn-gift {
+            opacity: 0;
+            display: inline-block;
+            padding: 12px 35px;
+            font-size: 1.2rem;
+            background-color: #d81b60;
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            transition: all 1s ease;
+            box-shadow: 0 4px 15px rgba(216, 27, 96, 0.3);
+        }
+
+        #btn-gift.show {
+            opacity: 1;
+        }
+
+        #btn-gift:hover {
+            background-color: #ad1457;
+            transform: scale(1.05);
+        }
+
+        /* قلوب خفيفة في الخلفية */
+        .floating-heart {
+            position: absolute;
+            bottom: -10%;
+            color: rgba(216, 27, 96, 0.2);
+            font-size: 25px;
+            animation: float 6s infinite ease-in;
+            z-index: 1;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="text-content">
+            ايوه احنا مش مرتبطين بس ده ميمنعش اني افرحك زي باقي البنات اكيد هما مش احسن منك في حاجه.. 
+            <br><br>
+            اول عيد حب لينا مع بعض الموضوع غريب الصراحه ومش عارف المفروض اقول ايه.. 
+            <br><br>
+            عرفت؟ دوسي علي الزرار الي تحت
+        </div>
+        
+        <a href="https://youtu.be/LempTf1dK5s?si=F1xM5hYlj6vMvnC-" id="btn-gift">دوسي يا سوسو 💖</a>
+    </div>
+
+    <script>
+        window.onload = () => {
+            const text = document.getElementById('text-content');
+            const btn = document.getElementById('btn-gift');
+
+            // إظهار النص بنعومة بعد نص ثانية من تحميل الصفحة
+            setTimeout(() => {
+                text.style.opacity = "1";
+                text.style.transform = "translateY(0)";
+            }, 500);
+
+            // إظهار الزرار بعد ما يكون النص ظهر بالكامل (بعد 2.5 ثانية)
+            setTimeout(() => {
+                btn.classList.add('show');
+            }, 3000);
+        };
+
+        // صنع قلوب طائرة هادية
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.innerHTML = "❤️";
+            heart.classList.add('floating-heart');
+            heart.style.left = Math.random() * 100 + "vw";
+            heart.style.animationDuration = (Math.random() * 3 + 4) + "s";
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 6000);
+        }
+        setInterval(createHeart, 800);
+    </script>
+</body>
+</html>

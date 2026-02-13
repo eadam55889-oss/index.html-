@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الهروب مستحيل</title>
+    <style>
+        body {
+            background-color: #050000;
+            color: #ff0000;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        /* تأثير النص الذي يظهر كلمة بكلمة */
+        #message {
+            font-size: 2rem;
+            font-weight: bold;
+            max-width: 80%;
+            min-height: 150px;
+            line-height: 1.6;
+            text-shadow: 0 0 10px #ff0000;
+            margin-bottom: 50px;
+        }
+
+        /* تأثير سيلان الدم من الكلمات */
+        .blood-drop {
+            display: inline-block;
+            position: relative;
+            color: #8a0303;
+            animation: drip 2s infinite;
+        }
+
+        @keyframes drip {
+            0% { text-shadow: 0 0px #8a0303; }
+            50% { text-shadow: 0 10px 5px #8a0303; }
+            100% { text-shadow: 0 20px 15px transparent; }
+        }
+
+        /* زر الدخول المسال بالدم */
+        .blood-btn {
+            display: none; /* يظهر بعد انتهاء الرسالة */
+            background: none;
+            border: 2px solid #ff0000;
+            color: #ff0000;
+            padding: 15px 40px;
+            font-size: 1.8rem;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 0 15px #ff0000;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .blood-btn:hover {
+            background: #440000;
+            transform: scale(1.1);
+            box-shadow: 0 0 30px #ff0000;
+        }
+
+        /* صوت مرعب في الخلفية (اختياري لو عندك ملف) */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, transparent 30%, black 100%);
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="overlay"></div>
+
+<div id="message"></div>
+
+<a href="hj.html" class="blood-btn" id="entryBtn">دخول 🩸</a>
+
+<script>
+    const fullText = "اللعبه الي فاتت  دي كانت بداية .. لو ملكيش في الرعب اهربي 😈 .. لو مستعده كملي 😈😈😈😈";
+    const words = fullText.split(" ");
+    const messageElement = document.getElementById("message");
+    const entryBtn = document.getElementById("entryBtn");
+
+    let wordIndex = 0;
+
+    function showNextWord() {
+        if (wordIndex < words.length) {
+            // إضافة الكلمة مع ستايل الدم
+            const span = document.createElement("span");
+            span.innerText = words[wordIndex] + " ";
+            span.className = "blood-drop";
+            messageElement.appendChild(span);
+            
+            wordIndex++;
+            
+            // سرعة ظهور الكلمات (600 مللي ثانية)
+            setTimeout(showNextWord, 500);
+        } else {
+            // إظهار الزر بعد انتهاء النص
+            entryBtn.style.display = "block";
+        }
+    }
+
+    // ابدأ التأثير بعد ثانية من فتح الصفحة
+    window.onload = () => {
+        setTimeout(showNextWord, 1000);
+    };
+</script>
+
+</body>
+</html>

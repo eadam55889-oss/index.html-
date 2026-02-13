@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pulse Drive Pro</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            touch-action: none; /* يمنع أي تداخل للمتصفح أثناء اللمس السريع */
+        }
+
+        body {
+            overflow: hidden;
+            font-family: 'Segoe UI', sans-serif;
+            background: #050505;
+        }
+
+        /* فيديو الخلفية مع تأثير تعتيم */
+        video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            filter: brightness(0.3) contrast(1.2);
+        }
+
+        /* الإسكور بتصميم مودرن */
+        .score-container {
+            position: fixed;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #fff;
+            text-align: center;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        #scoreValue {
+            font-size: 48px;
+            font-weight: 900;
+            display: block;
+            text-shadow: 0 0 20px #ff0000;
+        }
+
+        .target { font-size: 14px; opacity: 0.6; letter-spacing: 2px; }
+
+        /* منطقة اللعب */
+        .game {
+            display: flex;
+            width: 100%;
+            max-width: 500px; /* تحديد العرض ليكون مثل الموبايل حتى على الكمبيوتر */
+            height: 100vh;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 2px solid rgba(255, 255, 255, 0.1);
+            border-right: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .lane {
+            flex: 1;
+            position: relative;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* المربعات بتأثير النيون */
+        .tile {
+            width: 100%;
+            height: 160px;
+            background: linear-gradient(180deg, #ff0000 0%, #660000 100%);
+            position: absolute;
+            top: -160px;
+            border-radius: 4px;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+            cursor: pointer;
+            z-index: 5;
+        }
+
+        /* تأثير الوميض عند الضغط */
+        .hit-flash {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: white;
+            opacity: 0;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        /* زر البداية */
+        .start-box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px 50px;
+            background: #ff0000;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            z-index: 100;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.6);
+            transition: 0.2s;
+        }
+
+        .start-box:active { transform: translate(-50%, -50%) scale(0.9); }
+    </style>
+</head>
+<body>
+
+<video autoplay muted loop playsinline>
+    <source src="bg-video.mp4" type="video/mp4">
+</video>
+
+<audio id="music" src="music.mp3" preload="auto"></audio>
+
+<div class="score-container">
+    <span id="scoreValue">0</span>
+    <span class="target">GOAL: 100</span>
+</div>
+
+<div class="game" id="gameArea">
+    <div class="lane"><div class="hit-flash"></div></div>
+    <div class="lane"><div class="hit-flash"></div></div>
+    <div class="lane"><div class="hit-flash"></div></div>
+    <div class="lane"><div class="hit-flash"></div></div>
+</div>
+
+<div class="start-box" id="startBtn">START MISSION</div>
+
+<script>
+    const lanes = document.querySelectorAll(".lane");
+    const scoreValue = document.getElementById("scoreValue");
+    const startBtn = document.getElementById("startBtn");
+    const music = document.getElementById("music");
+
+    let score = 0;
+    let gameActive = false;
+    let spawnSpeed = 600; // سرعة نزول المربعات (كل 600 ملي ثانية)
+    let fallSpeed = 7;    // سرعة تحرك المربع للأسفل
+
+    function createTile() {
+        if (!gameActive) return;
+
+        const laneIdx = Math.floor(Math.random() * 4);
+        const lane = lanes[laneIdx];
+        const tile = document.createElement("div");
+        tile.classList.add("tile");
+        lane.appendChild(tile);
+
+        let pos = -160;
+        
+        // تحريك المربع
+        const move = setInterval(() => {
+            if (!gameActive) { clearInterval(move); return; }
+            
+            pos += fallSpeed + (score / 25); // السرعة تزيد تدريجياً
+            tile.style.top = pos + "px";
+
+            if (pos > window.innerHeight) {
+                clearInterval(move);
+                tile.remove();
+                endGame();
+            }
+        }, 16);
+
+        // عند الضغط (موبايل أو كمبيوتر)
+        const triggerHit = (e) => {
+            e.preventDefault();
+            score++;
+            scoreValue.innerText = score;
+            
+            // تأثير الضوء في الخانة
+            const flash = lane.querySelector('.hit-flash');
+            flash.style.opacity = "0.7";
+            setTimeout(() => flash.style.opacity = "0", 200);
+
+            clearInterval(move);
+            tile.remove();
+
+            if (score >= 100) {
+                gameActive = false;
+                window.location.href = "gh.html";
+            }
+        };
+
+        tile.addEventListener("touchstart", triggerHit);
+        tile.addEventListener("mousedown", triggerHit);
+    }
+
+    function startGame() {
+        score = 0;
+        scoreValue.innerText = "0";
+        gameActive = true;
+        startBtn.style.display = "none";
+        music.currentTime = 0;
+        music.play();
+
+        // نظام النزول المنظم
+        const spawner = () => {
+            if (gameActive) {
+                createTile();
+                // تقليل وقت الانتظار لجعل اللعبة أصعب مع الوقت
+                let nextSpawn = Math.max(300, spawnSpeed - (score * 2));
+                setTimeout(spawner, nextSpawn);
+            }
+        };
+        spawner();
+    }
+
+    function endGame() {
+        gameActive = false;
+        music.pause();
+        alert("انتهت اللعبة! سكورك: " + score);
+        location.reload();
+    }
+
+    startBtn.addEventListener("click", startGame);
+</script>
+
+</body>
+</html>

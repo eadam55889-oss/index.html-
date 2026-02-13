@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game Start</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: Arial, sans-serif;
+}
+
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    background:url("background.jpg") no-repeat center center/cover;
+    position:relative;
+}
+
+/* طبقة غامقة خفيفة فوق الصورة */
+body::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,0.6);
+}
+
+/* المحتوى */
+.content{
+    position:relative;
+    text-align:center;
+    color:white;
+}
+
+/* زرار ابدأ */
+.start-btn{
+    width:160px;
+    height:160px;
+    border-radius:50%;
+    border:3px solid white;
+    background:transparent;
+    color:white;
+    font-size:24px;
+    cursor:pointer;
+    margin-bottom:30px;
+    transition:0.4s;
+    position:relative;
+    overflow:hidden;
+}
+
+/* تأثير دائرة متحركة */
+.start-btn::before{
+    content:"";
+    position:absolute;
+    width:300%;
+    height:300%;
+    background:linear-gradient(45deg,#ff0057,#00f7ff,#ffea00);
+    top:-100%;
+    left:-100%;
+    transform:rotate(45deg);
+    transition:0.5s;
+    opacity:0;
+}
+
+.start-btn:hover::before{
+    top:-50%;
+    left:-50%;
+    opacity:0.4;
+}
+
+.start-btn:hover{
+    transform:scale(1.1);
+    background:white;
+    color:black;
+}
+
+/* مربع القواعد */
+.rules-box{
+    background:rgba(255,255,255,0.1);
+    padding:20px 30px;
+    border-radius:15px;
+    backdrop-filter:blur(10px);
+    font-size:18px;
+    max-width:300px;
+    margin:auto;
+    transition:0.3s;
+}
+
+.rules-box:hover{
+    background:rgba(255,255,255,0.2);
+    transform:scale(1.05);
+}
+</style>
+</head>
+
+<body>
+
+<div class="content">
+    <button class="start-btn" onclick="goToPage()">ابدأ</button>
+
+    <div class="rules-box">
+        <h3>قواعد اللعبة</h3>
+        <p>اللعبة سهلة 🎮</p>
+        <p>اكسب التلت أجيام تكسب هدية 🎁</p>
+    </div>
+</div>
+
+<script>
+function goToPage(){
+    window.location.href="io.html";
+}
+</script>
+
+</body>
+</html>
